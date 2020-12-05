@@ -1,0 +1,41 @@
+Data preparation
+
+```{r}
+library(readxl)
+Mydatatrue <- read_excel("Mydatatrue.xlsx")
+#Change the name of the collonnes to be easier to manipulate
+colnames(Mydatatrue) <- c('VehiculeCode','LineCode','StartTime','Days','EndTime','Duration','DurationInMinutes','TotalCount')
+head(Mydatatrue,1)
+```
+
+
+
+```{r}
+library(tidyverse)
+#a)
+Mydatatrue %>% group_by(LineCode) %>% summarise(TotalCount = sum(as.numeric(TotalCount), na.rm = TRUE))
+```
+```{r, warning=FALSE}
+#b)
+library(lubridate)
+data <- Mydatatrue %>% group_by(day(Days)) %>% summarise(TotalCount = mean(as.numeric(TotalCount), na.rm = TRUE)) 
+write.csv(data, "data.csv") #save the data in csv format
+data <- read.csv("data.csv") #call the data
+arrange(data[-1], desc(TotalCount)) #sort the data
+
+
+#The 23th is the day of highest trafic
+```
+#c)
+Accordind to the previous there are differences in terms of travelers per day on the average basis
+
+
+
+```{r}
+#d)
+#Number of route bus
+
+Mydatatrue %>% group_by(VehiculeCode) %>% count() 
+
+```
+
